@@ -1,15 +1,27 @@
-# Python
-backend/venv/
-__pycache__/
-*.pyc
+# Environment files
 .env
+.env.*
 
-# Node
-frontend/node_modules/
+# Python virtualenv variants
+env/
+ENV/
+
+# Mac/Linux metadata
+*.swp
+
+# Build artifacts
+build/
 dist/
 
-# VS Code
-.vscode/
+# Coverage
+coverage.xml
 
-# OS
-.DS_Store
+# JetBrains IDEs
+.idea/
+
+# Django collected static files
+backend/staticfiles/
+
+# React environment files
+frontend/.env
+frontend/.env.local
