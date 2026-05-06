@@ -16,8 +16,11 @@ from .services.movie_service import (
 
 class TrendingMoviesView(APIView):
     def get(self, request):
+        page = request.GET.get("page", 1)
+
         try:
-            data = get_trending_movies()
+            data = get_trending_movies(page)
+
             return Response(data)
 
         except Exception as error:
@@ -29,8 +32,11 @@ class TrendingMoviesView(APIView):
 
 class PopularMoviesView(APIView):
     def get(self, request):
+        page = request.GET.get("page", 1)
+
         try:
-            data = get_popular_movies()
+            data = get_popular_movies(page)
+
             return Response(data)
 
         except Exception as error:
@@ -38,7 +44,6 @@ class PopularMoviesView(APIView):
                 {"error": str(error)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
-
 
 class TopRatedMoviesView(APIView):
     def get(self, request):

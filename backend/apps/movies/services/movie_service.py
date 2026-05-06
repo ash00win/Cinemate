@@ -1,34 +1,47 @@
 from .tmdb_client import TMDBClient
-
+from ..utils.movie_transformer import (
+    transform_movie,
+    transform_movie_list,
+)
 
 client = TMDBClient()
 
 
-def get_trending_movies():
-    return client.get("/trending/movie/week")
+def get_trending_movies(page=1):
+    data = client.get(
+        "/trending/movie/week",
+        params={"page": page},
+    )
 
+    return transform_movie_list(data)
 
-def get_popular_movies():
-    return client.get("/movie/popular")
+def get_popular_movies(page=1):
+    data = client.get(
+        "/movie/popular",
+        params={"page": page},
+    )
 
+    return transform_movie_list(data)
 
 def get_top_rated_movies():
-    return client.get("/movie/top_rated")
-
+    data = client.get("/movie/top_rated")
+    return transform_movie_list(data)
 
 def get_upcoming_movies():
-    return client.get("/movie/upcoming")
+    data = client.get("/movie/upcoming")
+    return transform_movie_list(data)
 
 def search_movies(query):
-    return client.get(
+    data = client.get(
         "/search/movie",
         params={"query": query},
     )
 
+    return transform_movie_list(data)
 
 def get_movie_details(movie_id):
-    return client.get(f"/movie/{movie_id}")
-
+    data = client.get(f"/movie/{movie_id}")
+    return transform_movie(data)
 
 def get_similar_movies(movie_id):
     return client.get(f"/movie/{movie_id}/similar")
