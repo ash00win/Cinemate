@@ -13,4 +13,8 @@ urlpatterns = [
         "api/v1/movies/",
         include("apps.movies.urls"),
     ),
+    path(
+    "api/v1/watchlist/",
+    include("apps.watchlist.urls"),
+    ),
 ]
