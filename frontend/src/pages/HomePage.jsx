@@ -13,6 +13,8 @@ function HomePage() {
     (state) => state.movies,
   );
 
+  const { items } = useSelector((state) => state.watchlist);
+
   useEffect(() => {
     dispatch(getTrendingMovies());
   }, [dispatch]);
@@ -40,10 +42,21 @@ function HomePage() {
     <div>
       <h1 className="mb-8 text-4xl font-bold">Trending Movies</h1>
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {trendingMovies.map((movie) => (
-          <MovieCard key={movie.id} movie={movie} />
-        ))}
+      <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+        {trendingMovies.map((movie) => {
+          const watchlistItem = items.find(
+            (item) => item.tmdb_movie_id === movie.id,
+          );
+
+          return (
+            <MovieCard
+              key={movie.id}
+              movie={movie}
+              isInWatchlist={!!watchlistItem}
+              watchlistId={watchlistItem?.tmdb_movie_id}
+            />
+          );
+        })}
       </div>
     </div>
   );
