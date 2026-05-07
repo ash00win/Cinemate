@@ -17,4 +17,8 @@ urlpatterns = [
     "api/v1/watchlist/",
     include("apps.watchlist.urls"),
     ),
+    path(
+    "api/v1/comparisons/",
+    include("apps.comparisons.urls"),
+),
 ]
