@@ -53,3 +53,9 @@ def get_movie_videos(movie_id):
 
 def get_movie_reviews(movie_id):
     return client.get(f"/movie/{movie_id}/reviews")
+
+
+def get_movie_summary(movie_id):
+    data = client.get(f"/movie/{movie_id}")
+
+    return transform_movie(data)

@@ -1,4 +1,4 @@
-from rest_framework import generics, permissions, status
+from rest_framework import generics, permissions, status, serializers
 from rest_framework.response import Response
 
 from .models import Watchlist
@@ -20,8 +20,26 @@ class WatchlistListCreateView(
         )
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        tmdb_movie_id = serializer.validated_data[
+            "tmdb_movie_id"
+        ]
 
+        exists = Watchlist.objects.filter(
+            user=self.request.user,
+            tmdb_movie_id=tmdb_movie_id,
+        ).exists()
+
+        if exists:
+            raise serializers.ValidationError(
+                {
+                    "error": (
+                        "Movie already exists "
+                        "in watchlist"
+                    )
+                }
+            )
+
+        serializer.save(user=self.request.user)
 
 class WatchlistDeleteView(
     generics.DestroyAPIView
