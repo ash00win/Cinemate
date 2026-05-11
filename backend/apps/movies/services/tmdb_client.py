@@ -9,6 +9,10 @@ class TMDBClient:
     def __init__(self):
         self.api_key = settings.TMDB_API_KEY
 
+        self.headers = {
+            "User-Agent": "Cinemate/1.0",
+        }
+
     def get(self, endpoint, params=None):
         if params is None:
             params = {}
@@ -19,7 +23,8 @@ class TMDBClient:
             response = requests.get(
                 f"{self.BASE_URL}{endpoint}",
                 params=params,
-                timeout=10,
+                headers=self.headers,
+                timeout=20,
             )
 
             response.raise_for_status()
@@ -29,7 +34,10 @@ class TMDBClient:
         except requests.exceptions.RequestException as e:
             print("TMDB API ERROR:", e)
 
-            raise e
+            return {
+                "error": True,
+                "results": [],
+}
 
     def search_movies(self, query):
         return self.get(

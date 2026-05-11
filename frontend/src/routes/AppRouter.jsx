@@ -8,6 +8,8 @@ import ComparisonsPage from "../pages/ComparisonsPage";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import ProtectedRoute from "./ProtectedRoute";
+import SearchPage from "../pages/SearchPage";
+import MovieDetailsPage from "../pages/MovieDetailsPage";
 
 function AppRouter() {
   return (
@@ -15,7 +17,7 @@ function AppRouter() {
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<HomePage />} />
-
+          <Route path="/search" element={<SearchPage />} />
           <Route
             path="/watchlist"
             element={
@@ -24,6 +26,7 @@ function AppRouter() {
               </ProtectedRoute>
             }
           />
+          <Route path="/movies/:id" element={<MovieDetailsPage />} />
 
           <Route
             path="/comparisons"
