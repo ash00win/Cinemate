@@ -29,4 +29,12 @@ class TMDBClient:
         except requests.exceptions.RequestException as e:
             print("TMDB API ERROR:", e)
 
-            return {}
+            raise e
+
+    def search_movies(self, query):
+        return self.get(
+            "/search/movie",
+            params={
+                "query": query,
+            },
+        )

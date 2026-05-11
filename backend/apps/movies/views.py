@@ -12,6 +12,7 @@ from .services.movie_service import (
     get_similar_movies,
     get_movie_videos,
     get_movie_reviews,
+    search_movies,
 )
 
 class TrendingMoviesView(APIView):
@@ -139,3 +140,19 @@ class MovieReviewsView(APIView):
                 {"error": str(error)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+            
+class SearchMoviesView(APIView):
+    def get(self, request):
+        query = request.GET.get("q", "")
+
+        if not query:
+            return Response(
+                {
+                    "error": "Search query required"
+                },
+                status=400,
+            )
+
+        movies = search_movies(query)
+
+        return Response(movies)

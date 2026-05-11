@@ -36,4 +36,9 @@ urlpatterns = [
         "<int:movie_id>/reviews/",
         MovieReviewsView.as_view(),
     ),
+    path(
+    "search/",
+    SearchMoviesView.as_view(),
+    name="search-movies",
+    ),
 ]
