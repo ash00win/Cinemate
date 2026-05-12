@@ -65,6 +65,17 @@ def get_upcoming_movies():
 
     return transformed_data
 
+def get_movies_by_genre(genre_id, page=1):
+    data = client.get(
+        "/discover/movie",
+        params={
+            "with_genres": genre_id,
+            "page": page,
+        },
+    )
+
+    return transform_movie_list(data)
+
 def search_movies(query):
     data = client.search_movies(query)
 

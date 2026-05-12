@@ -9,7 +9,10 @@ import {
   fetchSimilarMovies,
   fetchMovieVideos,
   fetchMovieReviews,
+  fetchMoviesByGenre,
 } from "../../services/movieService";
+
+/* TRENDING */
 
 export const getTrendingMovies = createAsyncThunk(
   "movies/getTrendingMovies",
@@ -25,6 +28,24 @@ export const getTrendingMovies = createAsyncThunk(
   },
 );
 
+/* GENRE MOVIES */
+
+export const getMoviesByGenre = createAsyncThunk(
+  "movies/genre",
+
+  async ({ genreId, page = 1 }, thunkAPI) => {
+    try {
+      return await fetchMoviesByGenre(genreId, page);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to fetch genre movies",
+      );
+    }
+  },
+);
+
+/* POPULAR */
+
 export const getPopularMovies = createAsyncThunk(
   "movies/popular",
 
@@ -38,6 +59,8 @@ export const getPopularMovies = createAsyncThunk(
     }
   },
 );
+
+/* TOP RATED */
 
 export const getTopRatedMovies = createAsyncThunk(
   "movies/topRated",
@@ -53,6 +76,8 @@ export const getTopRatedMovies = createAsyncThunk(
   },
 );
 
+/* UPCOMING */
+
 export const getUpcomingMovies = createAsyncThunk(
   "movies/upcoming",
 
@@ -66,6 +91,8 @@ export const getUpcomingMovies = createAsyncThunk(
     }
   },
 );
+
+/* MOVIE DETAILS */
 
 export const getMovieDetails = createAsyncThunk(
   "movies/details",
@@ -81,6 +108,8 @@ export const getMovieDetails = createAsyncThunk(
   },
 );
 
+/* SIMILAR MOVIES */
+
 export const getSimilarMovies = createAsyncThunk(
   "movies/similar",
 
@@ -94,6 +123,8 @@ export const getSimilarMovies = createAsyncThunk(
     }
   },
 );
+
+/* MOVIE VIDEOS */
 
 export const getMovieVideos = createAsyncThunk(
   "movies/videos",
@@ -109,6 +140,8 @@ export const getMovieVideos = createAsyncThunk(
   },
 );
 
+/* MOVIE REVIEWS */
+
 export const getMovieReviews = createAsyncThunk(
   "movies/reviews",
 
@@ -123,11 +156,16 @@ export const getMovieReviews = createAsyncThunk(
   },
 );
 
+/* INITIAL STATE */
+
 const initialState = {
   trendingMovies: [],
   popularMovies: [],
   topRatedMovies: [],
   upcomingMovies: [],
+
+  genreMovies: [],
+  selectedGenre: null,
 
   similarMovies: [],
   movieVideos: [],
@@ -145,17 +183,27 @@ const initialState = {
   error: null,
 };
 
+/* SLICE */
+
 const movieSlice = createSlice({
   name: "movies",
 
   initialState,
 
-  reducers: {},
+  reducers: {
+    setSelectedGenre: (state, action) => {
+      state.selectedGenre = action.payload;
+
+      state.currentPage = 1;
+
+      state.error = null;
+    },
+  },
 
   extraReducers: (builder) => {
     builder
 
-      // TRENDING MOVIES
+      /* TRENDING */
 
       .addCase(getTrendingMovies.pending, (state) => {
         state.loadingTrending = true;
@@ -166,13 +214,11 @@ const movieSlice = createSlice({
       .addCase(getTrendingMovies.fulfilled, (state, action) => {
         state.loadingTrending = false;
 
-        if (!action.payload.error) {
-          state.trendingMovies = action.payload.results || [];
+        state.trendingMovies = action.payload.results || [];
 
-          state.currentPage = action.payload.page || 1;
+        state.currentPage = action.payload.page || 1;
 
-          state.totalPages = action.payload.total_pages || 1;
-        }
+        state.totalPages = action.payload.total_pages || 1;
       })
 
       .addCase(getTrendingMovies.rejected, (state, action) => {
@@ -181,31 +227,51 @@ const movieSlice = createSlice({
         state.error = action.payload;
       })
 
-      // POPULAR MOVIES
+      /* GENRE MOVIES */
+
+      .addCase(getMoviesByGenre.pending, (state) => {
+        state.loadingTrending = true;
+
+        state.error = null;
+      })
+
+      .addCase(getMoviesByGenre.fulfilled, (state, action) => {
+        state.loadingTrending = false;
+
+        state.genreMovies = action.payload.results || [];
+
+        state.currentPage = action.payload.page || 1;
+
+        state.totalPages = action.payload.total_pages || 1;
+      })
+
+      .addCase(getMoviesByGenre.rejected, (state, action) => {
+        state.loadingTrending = false;
+
+        state.genreMovies = [];
+
+        state.error = action.payload;
+      })
+
+      /* POPULAR */
 
       .addCase(getPopularMovies.fulfilled, (state, action) => {
-        if (!action.payload.error) {
-          state.popularMovies = action.payload.results || [];
-        }
+        state.popularMovies = action.payload.results || [];
       })
 
-      // TOP RATED MOVIES
+      /* TOP RATED */
 
       .addCase(getTopRatedMovies.fulfilled, (state, action) => {
-        if (!action.payload.error) {
-          state.topRatedMovies = action.payload.results || [];
-        }
+        state.topRatedMovies = action.payload.results || [];
       })
 
-      // UPCOMING MOVIES
+      /* UPCOMING */
 
       .addCase(getUpcomingMovies.fulfilled, (state, action) => {
-        if (!action.payload.error) {
-          state.upcomingMovies = action.payload.results || [];
-        }
+        state.upcomingMovies = action.payload.results || [];
       })
 
-      // MOVIE DETAILS
+      /* MOVIE DETAILS */
 
       .addCase(getMovieDetails.pending, (state) => {
         state.loadingDetails = true;
@@ -216,9 +282,7 @@ const movieSlice = createSlice({
       .addCase(getMovieDetails.fulfilled, (state, action) => {
         state.loadingDetails = false;
 
-        if (!action.payload.error) {
-          state.selectedMovie = action.payload;
-        }
+        state.selectedMovie = action.payload;
       })
 
       .addCase(getMovieDetails.rejected, (state, action) => {
@@ -227,23 +291,19 @@ const movieSlice = createSlice({
         state.error = action.payload;
       })
 
-      // MOVIE VIDEOS
+      /* MOVIE VIDEOS */
 
       .addCase(getMovieVideos.fulfilled, (state, action) => {
-        if (!action.payload.error) {
-          state.movieVideos = action.payload.results || [];
-        }
+        state.movieVideos = action.payload.results || [];
       })
 
-      // MOVIE REVIEWS
+      /* MOVIE REVIEWS */
 
       .addCase(getMovieReviews.fulfilled, (state, action) => {
-        if (!action.payload.error) {
-          state.movieReviews = action.payload.results || [];
-        }
+        state.movieReviews = action.payload.results || [];
       })
 
-      // SIMILAR MOVIES
+      /* SIMILAR MOVIES */
 
       .addCase(getSimilarMovies.pending, (state) => {
         state.loadingSimilar = true;
@@ -252,9 +312,7 @@ const movieSlice = createSlice({
       .addCase(getSimilarMovies.fulfilled, (state, action) => {
         state.loadingSimilar = false;
 
-        if (!action.payload.error) {
-          state.similarMovies = action.payload.results || [];
-        }
+        state.similarMovies = action.payload.results || [];
       })
 
       .addCase(getSimilarMovies.rejected, (state, action) => {
@@ -264,5 +322,7 @@ const movieSlice = createSlice({
       });
   },
 });
+
+export const { setSelectedGenre } = movieSlice.actions;
 
 export default movieSlice.reducer;

@@ -12,6 +12,7 @@ from .services.movie_service import (
     get_similar_movies,
     get_movie_videos,
     get_movie_reviews,
+    get_movies_by_genre,
 )
 
 
@@ -154,3 +155,21 @@ class MovieReviewsView(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
             
+            
+class MoviesByGenreView(APIView):
+    def get(self, request, genre_id):
+        page = request.GET.get("page", 1)
+
+        try:
+            data = get_movies_by_genre(
+                genre_id,
+                page,
+            )
+
+            return Response(data)
+
+        except Exception as error:
+            return Response(
+                {"error": str(error)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )

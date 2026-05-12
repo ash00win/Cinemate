@@ -10,6 +10,7 @@ from .views import (
     SimilarMoviesView,
     MovieVideosView,
     MovieReviewsView,
+    MoviesByGenreView,
 )
 
 urlpatterns = [
@@ -41,5 +42,9 @@ urlpatterns = [
     "search/",
     SearchMoviesView.as_view(),
     name="search-movies",
+    ),
+    path(
+    "genre/<int:genre_id>/",
+    MoviesByGenreView.as_view(),
     ),
 ]
