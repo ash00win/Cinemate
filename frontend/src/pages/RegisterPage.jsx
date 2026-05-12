@@ -1,16 +1,15 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { register } from "../features/auth/authSlice";
+import { Link } from "react-router-dom";
+
+import { register, clearAuthMessages } from "../features/auth/authSlice";
 
 function RegisterPage() {
   const dispatch = useDispatch();
 
-  const navigate = useNavigate();
-
-  const { loading, error } = useSelector((state) => state.auth);
+  const { loading, error, successMessage } = useSelector((state) => state.auth);
 
   const [formData, setFormData] = useState({
     username: "",
@@ -18,9 +17,16 @@ function RegisterPage() {
     password: "",
   });
 
+  useEffect(() => {
+    return () => {
+      dispatch(clearAuthMessages());
+    };
+  }, [dispatch]);
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
+
       [e.target.name]: e.target.value,
     });
   };
@@ -28,14 +34,7 @@ function RegisterPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    dispatch(register(formData))
-      .unwrap()
-      .then(() => {
-        navigate("/");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    dispatch(register(formData));
   };
 
   return (
@@ -72,12 +71,30 @@ function RegisterPage() {
 
         <button
           type="submit"
-          className="w-full rounded-lg bg-red-500 p-3 font-bold"
+          disabled={loading}
+          className="w-full rounded-lg bg-red-500 p-3 font-bold disabled:opacity-50"
         >
           {loading ? "Registering..." : "Register"}
         </button>
 
-        {error && <p className="text-red-500">{JSON.stringify(error)}</p>}
+        {successMessage && (
+          <div className="rounded-lg bg-green-500/20 p-3 text-green-400">
+            {successMessage}
+          </div>
+        )}
+
+        {error && (
+          <div className="rounded-lg bg-red-500/20 p-3 text-red-400">
+            {typeof error === "string" ? error : JSON.stringify(error)}
+          </div>
+        )}
+
+        <p className="text-center text-slate-400">
+          Already have an account?{" "}
+          <Link to="/login" className="text-red-400">
+            Login
+          </Link>
+        </p>
       </form>
     </div>
   );
