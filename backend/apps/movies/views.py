@@ -1,6 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import AllowAny
+
+from .services import movie_service
 
 from .services.movie_service import (
     get_trending_movies,
@@ -165,6 +168,43 @@ class MoviesByGenreView(APIView):
                 genre_id,
                 page,
             )
+
+            return Response(data)
+
+        except Exception as error:
+            return Response(
+                {"error": str(error)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+            
+class MovieCreditsView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, movie_id):
+        credits = movie_service.get_movie_credits(movie_id)
+
+        return Response(credits)
+    
+    
+
+class ActorDetailsView(APIView):
+    def get(self, request, actor_id):
+        try:
+            data = movie_service.get_actor_details(actor_id)
+
+            return Response(data)
+
+        except Exception as error:
+            return Response(
+                {"error": str(error)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+
+class ActorMoviesView(APIView):
+    def get(self, request, actor_id):
+        try:
+            data = movie_service.get_actor_movies(actor_id)
 
             return Response(data)
 

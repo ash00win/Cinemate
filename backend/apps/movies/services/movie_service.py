@@ -1,11 +1,17 @@
 from datetime import datetime
 
+import requests
+
+from django.conf import settings
+
 from .tmdb_client import TMDBClient
 
 from ..utils.movie_transformer import (
     transform_movie,
     transform_movie_list,
 )
+
+BASE_URL = "https://api.themoviedb.org/3"
 
 client = TMDBClient()
 
@@ -65,6 +71,7 @@ def get_upcoming_movies():
 
     return transformed_data
 
+
 def get_movies_by_genre(genre_id, page=1):
     data = client.get(
         "/discover/movie",
@@ -75,6 +82,7 @@ def get_movies_by_genre(genre_id, page=1):
     )
 
     return transform_movie_list(data)
+
 
 def search_movies(query):
     data = client.search_movies(query)
@@ -120,3 +128,95 @@ def get_movie_summary(movie_id):
     data = client.get(f"/movie/{movie_id}")
 
     return transform_movie(data)
+
+
+def get_movie_credits(movie_id):
+    endpoint = f"/movie/{movie_id}/credits"
+
+    response = requests.get(
+        f"{BASE_URL}{endpoint}",
+        params={
+            "api_key": settings.TMDB_API_KEY,
+        },
+    )
+
+    response.raise_for_status()
+
+    data = response.json()
+
+    cast = data.get("cast", [])
+
+    return [
+        {
+            "id": actor["id"],
+            "name": actor["name"],
+            "character": actor["character"],
+            "profile_url": (
+                f"https://image.tmdb.org/t/p/w500{actor['profile_path']}"
+                if actor.get("profile_path")
+                else None
+            ),
+        }
+        for actor in cast[:15]
+    ]
+    
+    
+def get_actor_details(actor_id):
+    response = requests.get(
+        f"{BASE_URL}/person/{actor_id}",
+        params={
+            "api_key": settings.TMDB_API_KEY,
+        },
+    )
+
+    response.raise_for_status()
+
+    data = response.json()
+
+    return {
+        "id": data["id"],
+        "name": data["name"],
+        "biography": data["biography"],
+        "birthday": data.get("birthday"),
+        "place_of_birth": data.get("place_of_birth"),
+        "popularity": data.get("popularity"),
+        "profile_url": (
+            f"https://image.tmdb.org/t/p/w500{data['profile_path']}"
+            if data.get("profile_path")
+            else None
+        ),
+    }
+    
+    
+def get_actor_movies(actor_id):
+    response = requests.get(
+        f"{BASE_URL}/person/{actor_id}/movie_credits",
+        params={
+            "api_key": settings.TMDB_API_KEY,
+        },
+    )
+
+    response.raise_for_status()
+
+    data = response.json()
+
+    cast_movies = data.get("cast", [])
+
+    transformed_movies = []
+
+    for movie in cast_movies:
+        transformed_movies.append(
+            {
+                "id": movie["id"],
+                "title": movie["title"],
+                "poster_url": (
+                    f"https://image.tmdb.org/t/p/w500{movie['poster_path']}"
+                    if movie.get("poster_path")
+                    else None
+                ),
+                "rating": movie.get("vote_average", 0),
+                "release_date": movie.get("release_date"),
+            }
+        )
+
+    return transformed_movies[:20]

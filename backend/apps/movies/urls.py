@@ -11,6 +11,9 @@ from .views import (
     MovieVideosView,
     MovieReviewsView,
     MoviesByGenreView,
+    MovieCreditsView,
+    ActorDetailsView,
+    ActorMoviesView,
 )
 
 urlpatterns = [
@@ -47,4 +50,17 @@ urlpatterns = [
     "genre/<int:genre_id>/",
     MoviesByGenreView.as_view(),
     ),
+    path(
+    "actors/<int:actor_id>/",
+    ActorDetailsView.as_view(),
+),
+
+path(
+    "actors/<int:actor_id>/movies/",
+    ActorMoviesView.as_view(),
+),
+    path(
+    "<int:movie_id>/credits/",
+    MovieCreditsView.as_view(),
+),
 ]
