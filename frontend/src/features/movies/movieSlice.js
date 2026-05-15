@@ -10,6 +10,7 @@ import {
   fetchMovieVideos,
   fetchMovieReviews,
   fetchMoviesByGenre,
+  fetchMovieCredits,
 } from "../../services/movieService";
 
 /* TRENDING */
@@ -156,6 +157,19 @@ export const getMovieReviews = createAsyncThunk(
   },
 );
 
+export const getMovieCredits = createAsyncThunk(
+  "movies/getMovieCredits",
+  async (movieId, thunkAPI) => {
+    try {
+      return await fetchMovieCredits(movieId);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to fetch cast",
+      );
+    }
+  },
+);
+
 /* INITIAL STATE */
 
 const initialState = {
@@ -170,6 +184,7 @@ const initialState = {
   similarMovies: [],
   movieVideos: [],
   movieReviews: [],
+  movieCredits: [],
 
   selectedMovie: null,
 
@@ -251,6 +266,9 @@ const movieSlice = createSlice({
         state.genreMovies = [];
 
         state.error = action.payload;
+      })
+      .addCase(getMovieCredits.fulfilled, (state, action) => {
+        state.movieCredits = action.payload;
       })
 
       /* POPULAR */

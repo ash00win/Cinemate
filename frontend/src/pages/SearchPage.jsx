@@ -17,6 +17,8 @@ function SearchPage() {
 
   const { results, loading, error } = useSelector((state) => state.search);
 
+  const { items } = useSelector((state) => state.watchlist);
+
   useEffect(() => {
     if (query.trim()) {
       dispatch(fetchSearchResults(query));
@@ -47,10 +49,21 @@ function SearchPage() {
           <span className="ml-2 font-bold text-white">"{query}"</span>
         </p>
       ) : (
-        <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-          {results.map((movie) => (
-            <MovieCard key={movie.id} movie={movie} />
-          ))}
+        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          {results.slice(0, 18).map((movie) => {
+            const watchlistItem = items.find(
+              (item) => item.tmdb_movie_id === movie.id,
+            );
+
+            return (
+              <MovieCard
+                key={movie.id}
+                movie={movie}
+                isInWatchlist={!!watchlistItem}
+                watchlistId={watchlistItem?.tmdb_movie_id}
+              />
+            );
+          })}
         </div>
       )}
     </div>

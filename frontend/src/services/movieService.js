@@ -62,3 +62,9 @@ export const fetchMoviesByGenre = async (genreId, page = 1) => {
     throw error;
   }
 };
+
+export const fetchMovieCredits = async (movieId) => {
+  const response = await axiosClient.get(`/movies/${movieId}/credits/`);
+
+  return response.data;
+};
