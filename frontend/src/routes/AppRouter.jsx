@@ -11,6 +11,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import SearchPage from "../pages/SearchPage";
 import MovieDetailsPage from "../pages/MovieDetailsPage";
 import VerifyEmailPage from "../pages/VerifyEmailPage";
+import ActorDetailsPage from "../pages/ActorDetailsPage";
 function AppRouter() {
   return (
     <BrowserRouter>
@@ -36,7 +37,7 @@ function AppRouter() {
               </ProtectedRoute>
             }
           />
-
+          <Route path="/actors/:id" element={<ActorDetailsPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/verify/:token" element={<VerifyEmailPage />} />
           <Route path="/register" element={<RegisterPage />} />

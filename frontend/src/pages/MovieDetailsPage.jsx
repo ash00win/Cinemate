@@ -1,8 +1,8 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 
 import { motion } from "framer-motion";
 
@@ -11,6 +11,7 @@ import {
   getSimilarMovies,
   getMovieVideos,
   getMovieReviews,
+  getMovieCredits,
 } from "../features/movies/movieSlice";
 
 import {
@@ -25,12 +26,15 @@ function MovieDetailsPage() {
 
   const dispatch = useDispatch();
 
+  const [showTrailer, setShowTrailer] = useState(false);
+
   const {
     selectedMovie,
     similarMovies,
     movieVideos,
     movieReviews,
     loadingDetails,
+    movieCredits,
     error,
   } = useSelector((state) => state.movies);
 
@@ -44,6 +48,8 @@ function MovieDetailsPage() {
     dispatch(getSimilarMovies(id));
 
     dispatch(getMovieReviews(id));
+
+    dispatch(getMovieCredits(id));
   }, [dispatch, id]);
 
   const trailer = useMemo(() => {
@@ -114,7 +120,7 @@ function MovieDetailsPage() {
             duration: 0.4,
           }}
         >
-          {/* MOBILE LAYOUT */}
+          {/* MOBILE */}
 
           <div className="relative z-10 flex flex-col items-center gap-4 bg-slate-950 px-4 pb-8 pt-4 text-center md:hidden">
             <img
@@ -139,6 +145,25 @@ function MovieDetailsPage() {
               <span className="rounded-full bg-red-500/20 px-3 py-2 text-red-300">
                 🔥 Popularity {Math.round(selectedMovie.popularity)}
               </span>
+              <span className="rounded-full bg-slate-800/80 px-3 py-2">
+                ⏱️{" "}
+                {selectedMovie.runtime ? `${selectedMovie.runtime} min` : "N/A"}
+              </span>
+
+              <span className="rounded-full bg-slate-800/80 px-3 py-2">
+                🌐{" "}
+                {selectedMovie.original_language
+                  ? selectedMovie.original_language.toUpperCase()
+                  : "N/A"}
+              </span>
+
+              <span className="rounded-full bg-slate-800/80 px-3 py-2">
+                🎬 {selectedMovie.status || "Unknown"}
+              </span>
+
+              <span className="rounded-full bg-slate-800/80 px-3 py-2">
+                {selectedMovie.adult ? "🔞 Adult" : "🟢 PG-13"}
+              </span>
             </div>
 
             <p className="text-sm leading-8 text-slate-200">
@@ -157,7 +182,7 @@ function MovieDetailsPage() {
             </button>
           </div>
 
-          {/* DESKTOP LAYOUT */}
+          {/* DESKTOP */}
 
           <div className="absolute bottom-10 left-0 hidden w-full flex-row items-end gap-8 p-8 md:flex">
             <img
@@ -182,6 +207,27 @@ function MovieDetailsPage() {
 
                 <span className="rounded-full bg-red-500/20 px-4 py-2 text-red-300">
                   🔥 Popularity {Math.round(selectedMovie.popularity)}
+                </span>
+                <span className="rounded-full bg-slate-800/80 px-4 py-2">
+                  ⏱️{" "}
+                  {selectedMovie.runtime
+                    ? `${selectedMovie.runtime} min`
+                    : "N/A"}
+                </span>
+
+                <span className="rounded-full bg-slate-800/80 px-4 py-2">
+                  🌐{" "}
+                  {selectedMovie.original_language
+                    ? selectedMovie.original_language.toUpperCase()
+                    : "N/A"}
+                </span>
+
+                <span className="rounded-full bg-slate-800/80 px-4 py-2">
+                  🎬 {selectedMovie.status || "Unknown"}
+                </span>
+
+                <span className="rounded-full bg-slate-800/80 px-4 py-2">
+                  {selectedMovie.adult ? "🔞 Adult" : "🟢 PG-13"}
                 </span>
               </div>
 
@@ -210,13 +256,70 @@ function MovieDetailsPage() {
         <div className="space-y-5">
           <h2 className="text-2xl font-bold md:text-3xl">Trailer</h2>
 
-          <div className="aspect-video overflow-hidden rounded-2xl shadow-2xl">
-            <iframe
-              src={`https://www.youtube.com/embed/${trailer.key}`}
-              title={trailer.name}
-              allowFullScreen
-              className="h-full w-full rounded-2xl"
+          <motion.div
+            whileHover={{
+              scale: 1.01,
+            }}
+            className="group relative cursor-pointer overflow-hidden rounded-3xl"
+            onClick={() => setShowTrailer(true)}
+          >
+            <img
+              src={selectedMovie.backdrop_url}
+              alt={selectedMovie.title}
+              className="h-[240px] w-full object-cover brightness-75 transition duration-500 group-hover:scale-105 md:h-[500px]"
             />
+
+            <div className="absolute inset-0 bg-black/40" />
+
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-red-500 text-4xl shadow-2xl transition group-hover:scale-110">
+                ▶
+              </div>
+
+              <p className="text-xl font-bold text-white md:text-3xl">
+                Play Trailer
+              </p>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* CAST */}
+
+      {movieCredits?.length > 0 && (
+        <div className="space-y-6">
+          <h2 className="text-2xl font-bold md:text-3xl">Cast</h2>
+
+          <div className="flex gap-5 overflow-x-auto pb-4 scrollbar-hide">
+            {movieCredits.map((actor) => (
+              <Link key={actor.id} to={`/actors/${actor.id}`}>
+                <motion.div
+                  whileHover={{
+                    y: -6,
+                  }}
+                  className="min-w-[160px] overflow-hidden rounded-2xl border border-slate-700 bg-slate-800 transition hover:border-red-500"
+                >
+                  <img
+                    src={
+                      actor.profile_url ||
+                      "https://via.placeholder.com/300x450?text=No+Image"
+                    }
+                    alt={actor.name}
+                    className="h-56 w-full object-cover"
+                  />
+
+                  <div className="p-4">
+                    <h3 className="line-clamp-1 font-bold text-white">
+                      {actor.name}
+                    </h3>
+
+                    <p className="mt-1 line-clamp-2 text-sm text-slate-400">
+                      {actor.character}
+                    </p>
+                  </div>
+                </motion.div>
+              </Link>
+            ))}
           </div>
         </div>
       )}
@@ -291,6 +394,44 @@ function MovieDetailsPage() {
           </div>
         )}
       </div>
+
+      {/* TRAILER MODAL */}
+
+      {showTrailer && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm">
+          <button
+            onClick={() => setShowTrailer(false)}
+            className="absolute right-6 top-6 z-50 rounded-full bg-red-500 px-4 py-2 font-bold text-white hover:bg-red-600"
+          >
+            ✕
+          </button>
+
+          <motion.div
+            initial={{
+              opacity: 0,
+              scale: 0.9,
+            }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+            }}
+            transition={{
+              duration: 0.25,
+            }}
+            className="w-full max-w-6xl overflow-hidden rounded-3xl shadow-2xl"
+          >
+            <div className="aspect-video">
+              <iframe
+                src={`https://www.youtube.com/embed/${trailer.key}?autoplay=1`}
+                title={trailer.name}
+                allowFullScreen
+                allow="autoplay"
+                className="h-full w-full"
+              />
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }
