@@ -65,7 +65,7 @@ function HomePage() {
     return (
       <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
         {movies?.length > 0 ? (
-          movies.map((movie) => {
+          movies.slice(0, 18).map((movie) => {
             const watchlistItem = items.find(
               (item) => item.tmdb_movie_id === movie.id,
             );
