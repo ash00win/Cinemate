@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
-
+import MovieCardSkeleton from "../components/MovieCardSkeleton";
 import {
   getTrendingMovies,
   getPopularMovies,
@@ -60,6 +60,15 @@ function HomePage() {
       }),
     );
   };
+  const renderSkeletonGrid = () => {
+    return (
+      <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+        {Array.from({ length: 12 }).map((_, index) => (
+          <MovieCardSkeleton key={index} />
+        ))}
+      </div>
+    );
+  };
 
   const renderMovieGrid = (movies) => {
     return (
@@ -89,9 +98,22 @@ function HomePage() {
   };
 
   if (loadingTrending) {
-    return <div className="text-center text-2xl">Loading movies...</div>;
-  }
+    return (
+      <div className="space-y-16">
+        <section>
+          <h1 className="mb-8 text-4xl font-bold">Trending Movies</h1>
 
+          {renderSkeletonGrid()}
+        </section>
+
+        <section>
+          <h2 className="mb-6 text-3xl font-bold">Popular Movies</h2>
+
+          {renderSkeletonGrid()}
+        </section>
+      </div>
+    );
+  }
   const displayedMovies = selectedGenre ? genreMovies : trendingMovies;
 
   return (

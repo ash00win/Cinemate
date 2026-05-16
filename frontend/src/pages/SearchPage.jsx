@@ -20,9 +20,11 @@ function SearchPage() {
   const { items } = useSelector((state) => state.watchlist);
 
   useEffect(() => {
-    if (query.trim()) {
-      dispatch(fetchSearchResults(query));
-    }
+    const trimmedQuery = query.trim();
+
+    if (!trimmedQuery) return;
+
+    dispatch(fetchSearchResults(trimmedQuery));
   }, [dispatch, query]);
 
   if (loading) {

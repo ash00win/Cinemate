@@ -68,3 +68,9 @@ export const fetchMovieCredits = async (movieId) => {
 
   return response.data;
 };
+
+export const fetchSearchSuggestions = async (query) => {
+  const response = await api.get(`/movies/search/?q=${query}`);
+
+  return response.data.results;
+};

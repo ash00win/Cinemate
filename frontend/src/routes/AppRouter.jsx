@@ -12,13 +12,20 @@ import SearchPage from "../pages/SearchPage";
 import MovieDetailsPage from "../pages/MovieDetailsPage";
 import VerifyEmailPage from "../pages/VerifyEmailPage";
 import ActorDetailsPage from "../pages/ActorDetailsPage";
+
+import ScrollToTop from "../components/ScrollToTop";
+
 function AppRouter() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
+
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<HomePage />} />
+
           <Route path="/search" element={<SearchPage />} />
+
           <Route
             path="/watchlist"
             element={
@@ -27,6 +34,7 @@ function AppRouter() {
               </ProtectedRoute>
             }
           />
+
           <Route path="/movies/:id" element={<MovieDetailsPage />} />
 
           <Route
@@ -37,9 +45,13 @@ function AppRouter() {
               </ProtectedRoute>
             }
           />
+
           <Route path="/actors/:id" element={<ActorDetailsPage />} />
+
           <Route path="/login" element={<LoginPage />} />
+
           <Route path="/verify/:token" element={<VerifyEmailPage />} />
+
           <Route path="/register" element={<RegisterPage />} />
         </Route>
       </Routes>
