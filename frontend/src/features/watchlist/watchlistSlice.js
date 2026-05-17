@@ -23,8 +23,12 @@ export const createWatchlistItem = createAsyncThunk(
   "watchlist/add",
   async (tmdbMovieId, thunkAPI) => {
     try {
-      return await addToWatchlist(tmdbMovieId);
+      return await addToWatchlist({
+        tmdb_movie_id: tmdbMovieId,
+      });
     } catch (error) {
+      console.log(error.response?.data);
+
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to add movie",
       );
@@ -87,7 +91,13 @@ const watchlistSlice = createSlice({
       })
 
       .addCase(createWatchlistItem.fulfilled, (state, action) => {
-        state.items.unshift(action.payload);
+        const exists = state.items.find(
+          (item) => item.tmdb_movie_id === action.payload.tmdb_movie_id,
+        );
+
+        if (!exists) {
+          state.items.unshift(action.payload);
+        }
       })
 
       .addCase(createWatchlistItem.rejected, (state, action) => {

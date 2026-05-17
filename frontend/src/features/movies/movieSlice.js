@@ -31,19 +31,6 @@ export const getTrendingMovies = createAsyncThunk(
 
 /* GENRE MOVIES */
 
-export const getMoviesByGenre = createAsyncThunk(
-  "movies/genre",
-
-  async ({ genreId, page = 1 }, thunkAPI) => {
-    try {
-      return await fetchMoviesByGenre(genreId, page);
-    } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data || "Failed to fetch genre movies",
-      );
-    }
-  },
-);
 
 /* POPULAR */
 
@@ -170,6 +157,20 @@ export const getMovieCredits = createAsyncThunk(
   },
 );
 
+export const getMoviesByGenre = createAsyncThunk(
+  "movies/getMoviesByGenre",
+  async (genreId, thunkAPI) => {
+    try {
+      const response = await axiosClient.get(`/movies/genre/${genreId}/`);
+
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to fetch genre movies",
+      );
+    }
+  },
+);
 /* INITIAL STATE */
 
 const initialState = {
@@ -177,7 +178,6 @@ const initialState = {
   popularMovies: [],
   topRatedMovies: [],
   upcomingMovies: [],
-
   genreMovies: [],
   selectedGenre: null,
 

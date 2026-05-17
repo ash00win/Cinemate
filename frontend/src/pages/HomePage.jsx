@@ -1,7 +1,9 @@
 import { useEffect } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
-import MovieCardSkeleton from "../components/MovieCardSkeleton";
+
+import { useNavigate } from "react-router-dom";
+
 import {
   getTrendingMovies,
   getPopularMovies,
@@ -13,29 +15,29 @@ import {
 
 import MovieCard from "../components/MovieCard";
 
+import HeroSection from "../components/HeroSection";
+
+const genres = [
+  { id: 28, name: "Action" },
+  { id: 35, name: "Comedy" },
+  { id: 27, name: "Horror" },
+  { id: 878, name: "Sci-Fi" },
+  { id: 10749, name: "Romance" },
+  { id: 16, name: "Animation" },
+];
+
 function HomePage() {
   const dispatch = useDispatch();
 
-  const genres = [
-    { id: 28, name: "Action" },
-    { id: 35, name: "Comedy" },
-    { id: 27, name: "Horror" },
-    { id: 878, name: "Sci-Fi" },
-    { id: 16, name: "Animation" },
-  ];
+  const navigate = useNavigate();
 
   const {
     trendingMovies,
     popularMovies,
     topRatedMovies,
     upcomingMovies,
-
     genreMovies,
     selectedGenre,
-
-    loadingTrending,
-    currentPage,
-    totalPages,
   } = useSelector((state) => state.movies);
 
   const { items } = useSelector((state) => state.watchlist);
@@ -50,226 +52,120 @@ function HomePage() {
     dispatch(getUpcomingMovies());
   }, [dispatch]);
 
-  const handleGenreClick = (genreId) => {
-    dispatch(setSelectedGenre(genreId));
+  const handleGenreClick = (genre) => {
+    if (selectedGenre === genre.id) {
+      dispatch(setSelectedGenre(null));
 
-    dispatch(
-      getMoviesByGenre({
-        genreId,
-        page: 1,
-      }),
-    );
-  };
-  const renderSkeletonGrid = () => {
-    return (
-      <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-        {Array.from({ length: 12 }).map((_, index) => (
-          <MovieCardSkeleton key={index} />
-        ))}
-      </div>
-    );
+      return;
+    }
+
+    dispatch(setSelectedGenre(genre.id));
+
+    dispatch(getMoviesByGenre({ genreId: genre.id }));
   };
 
-  const renderMovieGrid = (movies) => {
+  const handleViewAll = (title) => {
+    navigate(`/search?q=${encodeURIComponent(title)}`);
+  };
+
+  const renderMovieRow = (title, movies) => {
+    if (!movies?.length) return null;
+
     return (
-      <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-        {movies?.length > 0 ? (
-          movies.slice(0, 18).map((movie) => {
+      <section className="space-y-5">
+        {/* SECTION HEADER */}
+
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold text-white md:text-3xl">{title}</h2>
+
+          <button
+            onClick={() => handleViewAll(title)}
+            className="text-sm font-medium text-slate-400 transition hover:text-white"
+          >
+            View All
+          </button>
+        </div>
+
+        {/* MOVIE ROW */}
+
+        <div className="scrollbar-hide flex gap-5 overflow-x-auto pb-4">
+          {movies.map((movie) => {
             const watchlistItem = items.find(
               (item) => item.tmdb_movie_id === movie.id,
             );
 
             return (
-              <MovieCard
+              <div
                 key={movie.id}
-                movie={movie}
-                isInWatchlist={!!watchlistItem}
-                watchlistId={watchlistItem?.tmdb_movie_id}
-              />
+                className="min-w-[180px] max-w-[180px] flex-shrink-0 md:min-w-[220px] md:max-w-[220px]"
+              >
+                <MovieCard
+                  movie={movie}
+                  isInWatchlist={!!watchlistItem}
+                  watchlistId={watchlistItem?.tmdb_movie_id}
+                />
+              </div>
             );
-          })
-        ) : (
-          <p className="col-span-full text-center text-slate-400">
-            No movies found.
-          </p>
-        )}
-      </div>
+          })}
+        </div>
+      </section>
     );
   };
 
-  if (loadingTrending) {
-    return (
-      <div className="space-y-16">
-        <section>
-          <h1 className="mb-8 text-4xl font-bold">Trending Movies</h1>
-
-          {renderSkeletonGrid()}
-        </section>
-
-        <section>
-          <h2 className="mb-6 text-3xl font-bold">Popular Movies</h2>
-
-          {renderSkeletonGrid()}
-        </section>
-      </div>
-    );
-  }
-  const displayedMovies = selectedGenre ? genreMovies : trendingMovies;
-
   return (
-    <div className="space-y-16">
-      {/* TRENDING */}
+    <div className="min-h-screen bg-[#020817] text-white">
+      {/* HERO */}
 
-      <section>
-        <h1 className="mb-8 text-4xl font-bold">Trending Movies</h1>
+      <HeroSection />
 
+      {/* CONTENT */}
+
+      <div className="relative z-20 mt-20 space-y-16 px-6 pb-20 md:px-10 lg:px-16">
         {/* GENRE FILTERS */}
 
-        <div className="mb-8 flex flex-wrap gap-4">
-          <button
-            onClick={() => {
-              dispatch(setSelectedGenre(null));
-
-              dispatch(getTrendingMovies(1));
-            }}
-            className={`rounded-lg px-4 py-2 transition ${
-              selectedGenre === null
-                ? "bg-red-500"
-                : "bg-slate-700 hover:bg-slate-600"
-            }`}
-          >
-            All
-          </button>
-
-          {genres.map((genre) => (
-            <button
-              key={genre.id}
-              onClick={() => handleGenreClick(genre.id)}
-              className={`rounded-lg px-4 py-2 transition ${
-                selectedGenre === genre.id
-                  ? "bg-red-500"
-                  : "bg-slate-700 hover:bg-slate-600"
-              }`}
-            >
-              {genre.name}
-            </button>
-          ))}
-        </div>
-
-        {/* MOVIE GRID */}
-
-        {renderMovieGrid(displayedMovies)}
-
-        {/* RETRY BUTTON */}
-
-        {displayedMovies?.length === 0 && (
-          <div className="mt-6 text-center">
-            <button
-              onClick={() => {
-                if (selectedGenre) {
-                  dispatch(
-                    getMoviesByGenre({
-                      genreId: selectedGenre,
-                      page: currentPage,
-                    }),
-                  );
-                } else {
-                  dispatch(getTrendingMovies(currentPage));
-                }
-              }}
-              className="rounded-lg bg-red-500 px-4 py-2"
-            >
-              Retry
-            </button>
+        <section className="space-y-5">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-bold text-white md:text-3xl">
+              Browse Genres
+            </h2>
           </div>
-        )}
 
-        {/* PAGINATION */}
+          <div className="flex flex-wrap gap-4">
+            {genres.map((genre) => (
+              <button
+                key={genre.id}
+                onClick={() => handleGenreClick(genre)}
+                className={`rounded-full px-5 py-2 text-sm font-semibold transition-all duration-300 ${
+                  selectedGenre === genre.id
+                    ? "bg-red-500 text-white shadow-lg shadow-red-500/30"
+                    : "border border-slate-700 bg-slate-900 text-slate-300 hover:border-slate-500 hover:bg-slate-800"
+                }`}
+              >
+                {genre.name}
+              </button>
+            ))}
+          </div>
+        </section>
 
-        <div className="mt-10 flex items-center justify-center gap-6">
-          <button
-            onClick={() => {
-              if (currentPage > 1) {
-                if (selectedGenre) {
-                  dispatch(
-                    getMoviesByGenre({
-                      genreId: selectedGenre,
-                      page: currentPage - 1,
-                    }),
-                  );
-                } else {
-                  dispatch(getTrendingMovies(currentPage - 1));
-                }
-              }
-            }}
-            disabled={currentPage === 1}
-            className="rounded-lg bg-slate-700 px-5 py-2 disabled:opacity-40"
-          >
-            Previous
-          </button>
+        {/* GENRE RESULTS */}
 
-          <span className="text-lg font-semibold">Page {currentPage}</span>
+        {selectedGenre &&
+          renderMovieRow(
+            `${genres.find((g) => g.id === selectedGenre)?.name} Movies`,
+            genreMovies.slice(0, 15),
+          )}
 
-          <button
-            onClick={() => {
-              if (currentPage < totalPages) {
-                if (selectedGenre) {
-                  dispatch(
-                    getMoviesByGenre({
-                      genreId: selectedGenre,
-                      page: currentPage + 1,
-                    }),
-                  );
-                } else {
-                  dispatch(getTrendingMovies(currentPage + 1));
-                }
-              }
-            }}
-            disabled={currentPage === totalPages}
-            className="rounded-lg bg-red-500 px-5 py-2 disabled:opacity-40"
-          >
-            Next
-          </button>
-        </div>
-      </section>
+        {/* DEFAULT SECTIONS */}
 
-      {/* POPULAR */}
+        {renderMovieRow("Trending Now", trendingMovies.slice(0, 15))}
 
-      <section>
-        <h2 className="mb-6 text-3xl font-bold">Popular Movies</h2>
+        {renderMovieRow("Popular Movies", popularMovies.slice(0, 15))}
 
-        {popularMovies?.length > 0 ? (
-          renderMovieGrid(popularMovies)
-        ) : (
-          <p className="text-slate-400">Popular movies unavailable.</p>
-        )}
-      </section>
+        {renderMovieRow("Top Rated", topRatedMovies.slice(0, 15))}
 
-      {/* TOP RATED */}
-
-      <section>
-        <h2 className="mb-6 text-3xl font-bold">Top Rated Movies</h2>
-
-        {topRatedMovies?.length > 0 ? (
-          renderMovieGrid(topRatedMovies)
-        ) : (
-          <p className="text-slate-400">Top rated movies unavailable.</p>
-        )}
-      </section>
-
-      {/* UPCOMING */}
-
-      <section>
-        <h2 className="mb-6 text-3xl font-bold">Upcoming Movies</h2>
-
-        {upcomingMovies?.length > 0 ? (
-          renderMovieGrid(upcomingMovies)
-        ) : (
-          <p className="text-slate-400">Upcoming movies unavailable.</p>
-        )}
-      </section>
+        {renderMovieRow("Upcoming", upcomingMovies.slice(0, 15))}
+      </div>
     </div>
   );
 }
-
 export default HomePage;

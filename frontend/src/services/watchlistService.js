@@ -6,10 +6,8 @@ export const fetchWatchlist = async () => {
   return response.data;
 };
 
-export const addToWatchlist = async (tmdbMovieId) => {
-  const response = await axiosClient.post("/watchlist/", {
-    tmdb_movie_id: tmdbMovieId,
-  });
+export const addToWatchlist = async (data) => {
+  const response = await axiosClient.post("/watchlist/", data);
 
   return response.data;
 };

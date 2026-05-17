@@ -4,10 +4,10 @@ import Navbar from "../components/Navbar";
 
 function MainLayout() {
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
+    <div className="min-h-screen bg-[#020817] text-white">
       <Navbar />
 
-      <main className="mx-auto max-w-7xl px-4 py-6">
+      <main className="w-full overflow-x-hidden">
         <Outlet />
       </main>
     </div>

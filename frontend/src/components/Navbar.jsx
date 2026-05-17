@@ -176,8 +176,6 @@ function Navbar() {
 
             <Link to="/watchlist">Watchlist</Link>
 
-            <Link to="/comparisons">Comparisons</Link>
-
             {!token ? (
               <>
                 <Link to="/login">Login</Link>
