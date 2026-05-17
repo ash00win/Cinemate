@@ -51,7 +51,7 @@ function MovieDetailsPage() {
 
     dispatch(getMovieCredits(id));
   }, [dispatch, id]);
-
+  const [showAllReviews, setShowAllReviews] = useState(false);
   const trailer = useMemo(() => {
     if (!movieVideos?.length) {
       return null;
@@ -61,7 +61,7 @@ function MovieDetailsPage() {
       (video) => video.site === "YouTube" && video.type === "Trailer",
     );
   }, [movieVideos]);
-  const [showAllReviews, setShowAllReviews] = useState(false);
+
   const watchlistItem = items.find(
     (item) => item.tmdb_movie_id === selectedMovie?.id,
   );
@@ -371,7 +371,6 @@ function MovieDetailsPage() {
             </div>
           )}
         </div>
-
         {/* SIMILAR MOVIES */}
 
         <div className="space-y-6">

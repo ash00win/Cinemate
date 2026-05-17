@@ -22,9 +22,23 @@ function AppRouter() {
 
       <Routes>
         <Route element={<MainLayout />}>
+          {/* PUBLIC ROUTES */}
+
           <Route path="/" element={<HomePage />} />
 
           <Route path="/search" element={<SearchPage />} />
+
+          <Route path="/movies/:id" element={<MovieDetailsPage />} />
+
+          <Route path="/actors/:id" element={<ActorDetailsPage />} />
+
+          <Route path="/login" element={<LoginPage />} />
+
+          <Route path="/register" element={<RegisterPage />} />
+
+          <Route path="/verify/:token" element={<VerifyEmailPage />} />
+
+          {/* PROTECTED ROUTES */}
 
           <Route
             path="/watchlist"
@@ -35,8 +49,6 @@ function AppRouter() {
             }
           />
 
-          <Route path="/movies/:id" element={<MovieDetailsPage />} />
-
           <Route
             path="/comparisons"
             element={
@@ -45,14 +57,6 @@ function AppRouter() {
               </ProtectedRoute>
             }
           />
-
-          <Route path="/actors/:id" element={<ActorDetailsPage />} />
-
-          <Route path="/login" element={<LoginPage />} />
-
-          <Route path="/verify/:token" element={<VerifyEmailPage />} />
-
-          <Route path="/register" element={<RegisterPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

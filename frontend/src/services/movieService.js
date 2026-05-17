@@ -1,9 +1,14 @@
 import axiosClient from "../api/axios";
-import api from "../api/axios";
+
+/* TRENDING */
+
 export const fetchTrendingMovies = async (page = 1) => {
   const response = await axiosClient.get(`/movies/trending/?page=${page}`);
+
   return response.data;
 };
+
+/* MOVIE DETAILS */
 
 export const fetchMovieDetails = async (movieId) => {
   const response = await axiosClient.get(`/movies/${movieId}/`);
@@ -11,11 +16,15 @@ export const fetchMovieDetails = async (movieId) => {
   return response.data;
 };
 
+/* SIMILAR MOVIES */
+
 export const fetchSimilarMovies = async (movieId) => {
   const response = await axiosClient.get(`/movies/${movieId}/similar/`);
 
   return response.data;
 };
+
+/* MOVIE VIDEOS */
 
 export const fetchMovieVideos = async (movieId) => {
   const response = await axiosClient.get(`/movies/${movieId}/videos/`);
@@ -23,11 +32,15 @@ export const fetchMovieVideos = async (movieId) => {
   return response.data;
 };
 
+/* MOVIE REVIEWS */
+
 export const fetchMovieReviews = async (movieId) => {
   const response = await axiosClient.get(`/movies/${movieId}/reviews/`);
 
   return response.data;
 };
+
+/* POPULAR */
 
 export const fetchPopularMovies = async () => {
   const response = await axiosClient.get("/movies/popular/");
@@ -35,11 +48,15 @@ export const fetchPopularMovies = async () => {
   return response.data;
 };
 
+/* TOP RATED */
+
 export const fetchTopRatedMovies = async () => {
   const response = await axiosClient.get("/movies/top-rated/");
 
   return response.data;
 };
+
+/* UPCOMING */
 
 export const fetchUpcomingMovies = async () => {
   const response = await axiosClient.get("/movies/upcoming/");
@@ -47,9 +64,11 @@ export const fetchUpcomingMovies = async () => {
   return response.data;
 };
 
+/* GENRE MOVIES */
+
 export const fetchMoviesByGenre = async (genreId, page = 1) => {
   try {
-    const response = await api.get(`/movies/genre/${genreId}/`, {
+    const response = await axiosClient.get(`/movies/genre/${genreId}/`, {
       params: {
         page,
       },
@@ -63,14 +82,18 @@ export const fetchMoviesByGenre = async (genreId, page = 1) => {
   }
 };
 
+/* MOVIE CREDITS */
+
 export const fetchMovieCredits = async (movieId) => {
   const response = await axiosClient.get(`/movies/${movieId}/credits/`);
 
   return response.data;
 };
 
+/* SEARCH SUGGESTIONS */
+
 export const fetchSearchSuggestions = async (query) => {
-  const response = await api.get(`/movies/search/?q=${query}`);
+  const response = await axiosClient.get(`/movies/search/?q=${query}`);
 
   return response.data.results;
 };

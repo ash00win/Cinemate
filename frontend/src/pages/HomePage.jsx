@@ -61,11 +61,16 @@ function HomePage() {
 
     dispatch(setSelectedGenre(genre.id));
 
-    dispatch(getMoviesByGenre({ genreId: genre.id }));
+    dispatch(getMoviesByGenre(genre.id));
   };
 
-  const handleViewAll = (title) => {
-    navigate(`/search?q=${encodeURIComponent(title)}`);
+  const handleViewAll = (movies, title) => {
+    navigate("/search", {
+      state: {
+        movies,
+        title,
+      },
+    });
   };
 
   const renderMovieRow = (title, movies) => {
@@ -79,7 +84,7 @@ function HomePage() {
           <h2 className="text-2xl font-bold text-white md:text-3xl">{title}</h2>
 
           <button
-            onClick={() => handleViewAll(title)}
+            onClick={() => handleViewAll(movies, title)}
             className="text-sm font-medium text-slate-400 transition hover:text-white"
           >
             View All
@@ -152,20 +157,21 @@ function HomePage() {
         {selectedGenre &&
           renderMovieRow(
             `${genres.find((g) => g.id === selectedGenre)?.name} Movies`,
-            genreMovies.slice(0, 15),
+            genreMovies,
           )}
 
         {/* DEFAULT SECTIONS */}
 
-        {renderMovieRow("Trending Now", trendingMovies.slice(0, 15))}
+        {renderMovieRow("Trending Now", trendingMovies)}
 
-        {renderMovieRow("Popular Movies", popularMovies.slice(0, 15))}
+        {renderMovieRow("Popular Movies", popularMovies)}
 
-        {renderMovieRow("Top Rated", topRatedMovies.slice(0, 15))}
+        {renderMovieRow("Top Rated", topRatedMovies)}
 
-        {renderMovieRow("Upcoming", upcomingMovies.slice(0, 15))}
+        {renderMovieRow("Upcoming", upcomingMovies)}
       </div>
     </div>
   );
 }
+
 export default HomePage;

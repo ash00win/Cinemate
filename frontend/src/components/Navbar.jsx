@@ -113,13 +113,20 @@ function Navbar() {
   };
 
   return (
-    <header className="border-b border-slate-700 bg-slate-950">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
-        <Link to="/" className="text-2xl font-bold text-red-500">
+    <header className="fixed left-0 top-0 z-50 w-full border-b border-white/10 bg-black/30 backdrop-blur-xl">
+      <div className="mx-auto flex max-w-[1920px] items-center justify-between px-6 py-4 lg:px-14">
+        {/* LOGO */}
+
+        <Link
+          to="/"
+          className="text-3xl font-black tracking-tight text-grey-500 transition hover:scale-[1.02]"
+        >
           Cinemate
         </Link>
 
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-5">
+          {/* SEARCH */}
+
           <div className="relative hidden md:block" ref={searchRef}>
             <form onSubmit={handleSearch}>
               <input
@@ -132,12 +139,14 @@ function Navbar() {
                     setShowSuggestions(true);
                   }
                 }}
-                className="w-64 rounded-lg border border-slate-700 bg-slate-800 px-4 py-2 text-sm text-white outline-none focus:border-red-500"
+                className="w-72 rounded-2xl border border-white/10 bg-white/10 px-5 py-3 text-sm text-white placeholder:text-white/50 outline-none backdrop-blur-xl transition focus:border-white/20"
               />
             </form>
 
+            {/* SUGGESTIONS */}
+
             {showSuggestions && (
-              <div className="absolute left-0 top-12 z-50 w-full overflow-hidden rounded-lg border border-slate-700 bg-slate-900 shadow-lg">
+              <div className="absolute left-0 top-16 z-50 w-full overflow-hidden rounded-2xl border border-white/10 bg-[#0f172a]/95 shadow-2xl backdrop-blur-xl">
                 {loadingSuggestions ? (
                   <div className="p-4 text-sm text-slate-400">Searching...</div>
                 ) : suggestions.length > 0 ? (
@@ -145,12 +154,12 @@ function Navbar() {
                     <button
                       key={movie.id}
                       onClick={() => handleSuggestionClick(movie.id)}
-                      className="flex w-full items-center gap-3 border-b border-slate-800 px-4 py-3 text-left transition hover:bg-slate-800"
+                      className="flex w-full items-center gap-3 border-b border-white/5 px-4 py-3 text-left transition hover:bg-white/5"
                     >
                       <img
                         src={movie.poster_url}
                         alt={movie.title}
-                        className="h-14 w-10 rounded object-cover"
+                        className="h-14 w-10 rounded-md object-cover"
                       />
 
                       <div>
@@ -171,21 +180,43 @@ function Navbar() {
             )}
           </div>
 
-          <nav className="flex items-center gap-6">
-            <Link to="/">Home</Link>
+          {/* NAVIGATION */}
 
-            <Link to="/watchlist">Watchlist</Link>
+          <nav className="flex items-center gap-3">
+            <Link
+              to="/"
+              className="rounded-2xl border border-white/10 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur-xl transition hover:bg-white/20"
+            >
+              Home
+            </Link>
+
+            <Link
+              to="/watchlist"
+              className="rounded-2xl border border-white/10 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur-xl transition hover:bg-white/20"
+            >
+              Watchlist
+            </Link>
 
             {!token ? (
               <>
-                <Link to="/login">Login</Link>
+                <Link
+                  to="/register"
+                  className="rounded-2xl border border-white/10 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur-xl transition hover:bg-white/20"
+                >
+                  Register
+                </Link>
 
-                <Link to="/register">Register</Link>
+                <Link
+                  to="/login"
+                  className="rounded-2xl border border-white/10 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur-xl transition hover:bg-white/20"
+                >
+                  Login
+                </Link>
               </>
             ) : (
               <button
                 onClick={handleLogout}
-                className="rounded-lg bg-red-500 px-4 py-2"
+                className="rounded-2xl bg-gray-300 px-5 py-3 text-sm font-semibold text-black transition hover:bg-gray-200"
               >
                 Logout
               </button>

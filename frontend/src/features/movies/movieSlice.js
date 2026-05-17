@@ -159,11 +159,10 @@ export const getMovieCredits = createAsyncThunk(
 
 export const getMoviesByGenre = createAsyncThunk(
   "movies/getMoviesByGenre",
+
   async (genreId, thunkAPI) => {
     try {
-      const response = await axiosClient.get(`/movies/genre/${genreId}/`);
-
-      return response.data;
+      return await fetchMoviesByGenre(genreId);
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data || "Failed to fetch genre movies",

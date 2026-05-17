@@ -68,7 +68,7 @@ function WatchlistPage() {
     <div className="min-h-screen bg-[#020817] text-white">
       {/* HEADER */}
 
-      <section className="border-b border-slate-800 bg-[#06152d]">
+      <section className="bg-gradient-to-b from-[#06152d] to-[#020817]">
         <div className="mx-auto max-w-7xl px-6 py-12 md:px-10 lg:px-16">
           <p className="mb-4 text-sm font-semibold uppercase tracking-[0.3em] text-red-400">
             Personal Collection
@@ -94,7 +94,7 @@ function WatchlistPage() {
 
       {/* CONTENT */}
 
-      <div className="mx-auto max-w-7xl px-6 py-10 md:px-10 lg:px-16">
+      <div className="mx-auto max-w-7xl px-6 py-4 md:px-10 lg:px-16">
         {items.length === 0 ? (
           <div className="flex min-h-[420px] flex-col items-center justify-center rounded-[32px] border border-dashed border-slate-700 bg-slate-900/60 px-6 text-center">
             <div className="mb-6 text-7xl">🎬</div>

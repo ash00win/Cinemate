@@ -1,11 +1,7 @@
 import { useState, useEffect } from "react";
-
 import { useNavigate, Link } from "react-router-dom";
-
 import { useDispatch, useSelector } from "react-redux";
-
 import toast from "react-hot-toast";
-
 import { login, clearAuthMessages } from "../features/auth/authSlice";
 
 function LoginPage() {
@@ -61,43 +57,62 @@ function LoginPage() {
   };
 
   return (
-    <div className="mx-auto max-w-md rounded-2xl bg-slate-800 p-8 shadow-xl transition-all duration-300">
-      <h1 className="mb-6 text-4xl font-bold">Login</h1>
+    <div className="flex min-h-screen items-center justify-center px-4 py-24">
+      <div className="w-full max-w-md rounded-[32px] border border-white/10 bg-white/10 p-8 shadow-2xl backdrop-blur-xl">
+        {/* HEADER */}
 
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <input
-          type="text"
-          name="username"
-          placeholder="Username"
-          value={formData.username}
-          onChange={handleChange}
-          className="w-full rounded-xl border border-slate-700 bg-slate-700 p-3 transition-all duration-200 outline-none focus:border-red-500"
-        />
+        <div className="mb-8 text-center">
+          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.35em] text-red-400">
+            Welcome Back
+          </p>
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          className="w-full rounded-xl border border-slate-700 bg-slate-700 p-3 transition-all duration-200 outline-none focus:border-red-500"
-        />
+          <h1 className="text-5xl font-black text-white">Login</h1>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded-xl bg-red-500 p-3 font-bold transition-all duration-200 hover:scale-[1.02] hover:bg-red-600 disabled:opacity-50"
-        >
-          {loading ? "Logging in..." : "Login"}
-        </button>
+          <p className="mt-3 text-slate-300">
+            Continue your cinematic journey.
+          </p>
+        </div>
 
-        <p className="text-center text-slate-400">
-          Don’t have an account?{" "}
-          <Link to="/register" className="text-red-400 hover:text-red-300">
-            Register
-          </Link>
-        </p>
-      </form>
+        {/* FORM */}
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <input
+            type="text"
+            name="username"
+            placeholder="Username"
+            value={formData.username}
+            onChange={handleChange}
+            className="w-full rounded-2xl border border-white/10 bg-gray-300 p-4 text-black placeholder:text-gray-600 outline-none transition focus:border-red-400"
+          />
+
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            className="w-full rounded-2xl border border-white/10 bg-gray-300 p-4 text-black placeholder:text-gray-600 outline-none transition focus:border-red-400"
+          />
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full rounded-2xl bg-red-500 p-4 text-lg font-bold text-white transition hover:bg-red-600 disabled:opacity-50"
+          >
+            {loading ? "Logging in..." : "Login"}
+          </button>
+
+          <p className="pt-2 text-center text-slate-300">
+            Don’t have an account?{" "}
+            <Link
+              to="/register"
+              className="font-semibold text-red-400 transition hover:text-red-300"
+            >
+              Register
+            </Link>
+          </p>
+        </form>
+      </div>
     </div>
   );
 }

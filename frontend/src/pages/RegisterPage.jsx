@@ -1,9 +1,6 @@
 import { useState, useEffect } from "react";
-
 import { useDispatch, useSelector } from "react-redux";
-
 import { Link } from "react-router-dom";
-
 import { register, clearAuthMessages } from "../features/auth/authSlice";
 
 function RegisterPage() {
@@ -38,64 +35,83 @@ function RegisterPage() {
   };
 
   return (
-    <div className="mx-auto max-w-md rounded-xl bg-slate-800 p-8">
-      <h1 className="mb-6 text-3xl font-bold">Register</h1>
+    <div className="flex min-h-screen items-center justify-center px-4 py-24">
+      <div className="w-full max-w-md rounded-[32px] border border-white/10 bg-white/10 p-8 shadow-2xl backdrop-blur-xl">
+        {/* HEADER */}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          name="username"
-          placeholder="Username"
-          value={formData.username}
-          onChange={handleChange}
-          className="w-full rounded-lg bg-slate-700 p-3"
-        />
+        <div className="mb-8 text-center">
+          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.35em] text-red-400">
+            Join Cinemate
+          </p>
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          className="w-full rounded-lg bg-slate-700 p-3"
-        />
+          <h1 className="text-5xl font-black text-white">Register</h1>
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          className="w-full rounded-lg bg-slate-700 p-3"
-        />
+          <p className="mt-3 text-slate-300">
+            Create your personal movie universe.
+          </p>
+        </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded-lg bg-red-500 p-3 font-bold disabled:opacity-50"
-        >
-          {loading ? "Registering..." : "Register"}
-        </button>
+        {/* FORM */}
 
-        {successMessage && (
-          <div className="rounded-lg bg-green-500/20 p-3 text-green-400">
-            {successMessage}
-          </div>
-        )}
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <input
+            type="text"
+            name="username"
+            placeholder="Username"
+            value={formData.username}
+            onChange={handleChange}
+            className="w-full rounded-2xl border border-white/10 bg-gray-300 p-4 text-black placeholder:text-gray-600 outline-none transition focus:border-red-400"
+          />
 
-        {error && (
-          <div className="rounded-lg bg-red-500/20 p-3 text-red-400">
-            {typeof error === "string" ? error : JSON.stringify(error)}
-          </div>
-        )}
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+            className="w-full rounded-2xl border border-white/10 bg-gray-300 p-4 text-black placeholder:text-gray-600 outline-none transition focus:border-red-400"
+          />
 
-        <p className="text-center text-slate-400">
-          Already have an account?{" "}
-          <Link to="/login" className="text-red-400">
-            Login
-          </Link>
-        </p>
-      </form>
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            className="w-full rounded-2xl border border-white/10 bg-gray-300 p-4 text-black placeholder:text-gray-600 outline-none transition focus:border-red-400"
+          />
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full rounded-2xl bg-red-500 p-4 text-lg font-bold text-white transition hover:bg-red-600 disabled:opacity-50"
+          >
+            {loading ? "Registering..." : "Register"}
+          </button>
+
+          {successMessage && (
+            <div className="rounded-2xl border border-green-500/20 bg-green-500/10 p-4 text-sm text-green-300">
+              {successMessage}
+            </div>
+          )}
+
+          {error && (
+            <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-300">
+              {typeof error === "string" ? error : JSON.stringify(error)}
+            </div>
+          )}
+
+          <p className="pt-2 text-center text-slate-300">
+            Already have an account?{" "}
+            <Link
+              to="/login"
+              className="font-semibold text-red-400 transition hover:text-red-300"
+            >
+              Login
+            </Link>
+          </p>
+        </form>
+      </div>
     </div>
   );
 }
